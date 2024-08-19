@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        
+        #header {
+            background-color: black;
+            color: yellow;
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        #header .logo {
+            background-color: black;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        #header .logo img {
+            width: 100%;
+            border-radius: 50%;
+        }
+        #cart-summary div {
+            margin-top: 10px;
+        }
+        button img {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+        #total {
+            font-weight: bold;
+        }
+        .credit-card-logo {
+            width: 50px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <div class="logo">
+            <img src="לוגו.JPG" alt="Logo">
+        </div>
+        אתר הקניות
+    </div>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Products</h5>
+                        <div id="display"></div> <!-- כאן יוצגו המוצרים לפי קטגוריה -->
+                        <button class="btn btn-primary mt-2" onclick="displayByCategory('fruits')">Fruits</button>
+                        <button class="btn btn-primary mt-2" onclick="displayByCategory('dairy')">Dairy</button>
+                        <button class="btn btn-primary mt-2" onclick="displayByCategory('bakery')">Bakery</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Cart</h5>
+                        <div id="cart"></div> <!-- כאן יוצגו הפריטים שנוספו לעגלה -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Summary</h5>
+                        <div id="cart-summary"></div> <!-- כאן יוצגו סיכום המוצרים בעגלה -->
+                        <div id="total"></div> <!-- כאן יוצג סה"כ לתשלום -->
+                        <button class="btn btn-success mt-2" data-toggle="modal" data-target="#paymentModal">BUY</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentModalLabel">Choose Payment Method</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Total amount: <strong id="modal-total"></strong></p>
+                    <div class="form-group">
+                        <label>Select a credit card:</label>
+                        <div>
+                            <label class="d-flex align-items-center">
+                                <input type="radio" name="credit-card" value="AMEX" class="mr-2">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/800px-American_Express_logo_%282018%29.svg.png" alt="AMEX" class="credit-card-logo">
+                                AMEX
+                            </label>
+                            <label class="d-flex align-items-center">
+                                <input type="radio" name="credit-card" value="VISA" class="mr-2">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Visa_2014.svg/120px-Visa_2014.svg.png" alt="VISA" class="credit-card-logo">
+                                VISA
+                            </label>
+                            <label class="d-flex align-items-center">
+                                <input type="radio" name="credit-card" value="MASTERCARD" class="mr-2">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1024px-Mastercard-logo.svg.png" alt="MASTERCARD" class="credit-card-logo">
+                                MASTERCARD
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Pay Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        let products = [
+            { "desc": "banana", "price": 2, "category": "fruits", "img": "https://tropico.co.il/wp-content/uploads/2021/07/10271-scaled-1.jpg" },
+            { "desc": "cheese", "price": 15, "category": "dairy", "img": "https://www.israelhayom.co.il/wp-content/uploads/2023/05/17/13681486209865_b-960x640.jpg" },
+            { "desc": "croissant", "price": 12, "category": "bakery", "img": "https://media.istockphoto.com/id/1372262769/photo/delicious-fresh-croissant-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=6VEBNPfz35PlkSypIyAVpG_gsct4Z4LKn7-aRZcn3FM=" },
+            { "desc": "apple", "price": 3, "category": "fruits", "img": "https://d3m9l0v76dty0.cloudfront.net/system/photos/758754/large/20931a8bc5887933fb432d60a98d8596.jpg" },
+            { "desc": "milk", "price": 5, "category": "dairy", "img": "https://cdn.pixabay.com/photo/2019/07/25/20/55/milk-4363421_1280.jpg" },
+            { "desc": "pizza", "price": 24, "category": "bakery", "img": "https://images.kikar.co.il/cdn-cgi/image/format=jpeg,fit=contain,width=900/2019/08/20/b4eaf2d0-01f0-11ef-8590-ed85b6ab3b94__h772_w1280.jpg" },
+            { "desc": "orange", "price": 4, "category": "fruits", "img": "https://decogarden.co.il/wp-content/uploads/2023/02/%D7%AA%D7%A4%D7%95%D7%96-%D7%95%D7%95%D7%A9%D7%99%D7%A0%D7%92%D7%98%D7%95%D7%9F-%D7%95%D7%9C%D7%A0%D7%A1%D7%99%D7%94.webp" },
+            { "desc": "bread", "price": 10, "category": "bakery", "img": "https://thumbs.dreamstime.com/b/bread-cut-14027607.jpg" },
+            { "desc": "grapes", "price": 6, "category": "fruits", "img": "https://cdn.pixabay.com/photo/2024/01/13/08/08/green-grape-8505248_1280.jpg" },
+            { "desc": "muffin", "price": 8, "category": "bakery", "img": "https://t4.ftcdn.net/jpg/00/57/84/51/360_F_57845129_bgjvynkGnohVyAs2ARJpujyDHFfiIwsk.jpg" }
+        ];
+
+        let cart = [];
+        let total = 0;
+
+        function displayByCategory(catName) {
+            document.getElementById('display').innerHTML = products
+                .filter(item => item.category === catName)
+                .map(item => `<button onclick="addToCart('${item.desc}', ${item.price})"><img src="${item.img}" alt="${item.desc}">${item.desc}, ${item.price}₪</button>`)
+                .join("");
+        }
+
+        function addToCart(desc, price) {
+            cart.push({ desc, price });
+            total += price;
+            updateCart();
+        }
+
+        function updateCart() {
+            document.getElementById('cart').innerHTML = cart
+                .map(item => `<div>${item.desc}, ${item.price}₪</div>`)
+                .join("");
+
+            let minItem = cart.reduce((min, item) => item.price < min.price ? item : min, cart[0]);
+            let maxItem = cart.reduce((max, item) => item.price > max.price ? item : max, cart[0]);
+            let average = total / cart.length;
+
+            document.getElementById('cart-summary').innerHTML = `
+                <div><em>המוצר הזול ברשימה: ${minItem.price}₪ = ${minItem.desc}</em></div>
+                <div><em>המוצר היקר ברשימה: ${maxItem.price}₪ = ${maxItem.desc}</em></div>
+                <div><em>ממוצע למוצר: ${average.toFixed(2)}₪</em></div>
+                <div>סה"כ מס' המוצרים: ${cart.length}</div>
+                <div id="total">סה"כ לתשלום: ${total}₪</div>
+            `;
+            document.getElementById('modal-total').innerText = `${total}₪`;
+        }
+    </script>
+</body>
+</html>
